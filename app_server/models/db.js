@@ -5,10 +5,9 @@ const readline = require('readline');
 
 console.log(`********************\n${process.env.NODE_ENV}\n********************`);
 
-
 if (process.env.NODE_ENV === 'production') {
     dbURI = 'mongodb+srv://dbAdmin:dbPassword@loc8r-kuuy2.gcp.mongodb.net/test?retryWrites=true&w=majority';
-    dbURI = process.env.MONGODB_URI;
+    //dbURI = process.env.MONGODB_URI;
 }
 
 // const dbURIlog = 'mongodb://localhost/Loc8rLog';
