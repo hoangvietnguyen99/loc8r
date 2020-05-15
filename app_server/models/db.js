@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
-const dbURI = 'mongodb://localhost/Loc8r';
+let dbURI = 'mongodb://localhost/Loc8r';
+if (process.env.NODE_ENV === 'production') {
+    dbURI = process.env.MONGODB_URI;
+}
 
 // const dbURIlog = 'mongodb://localhost/Loc8rLog';
 // const logDB = mongoose.createConnection(dbURIlog); //using logDB same as mongoose
@@ -42,3 +45,5 @@ process.on('SIGTERM', () => {
         process.exit(0);
     });
 });
+
+require('./locations');
