@@ -3,8 +3,6 @@ const host = process.env.DB_HOST || '127.0.0.1';
 let dbURI = `mongodb://${host}/Loc8r`;
 const readline = require('readline');
 
-console.log(`********************\n${process.env.NODE_ENV}\n********************`);
-
 if (process.env.NODE_ENV === 'production') {
     dbURI = 'mongodb+srv://dbAdmin:dbPassword@loc8r-kuuy2.gcp.mongodb.net/test?retryWrites=true&w=majority';
     //dbURI = process.env.MONGODB_URI;
