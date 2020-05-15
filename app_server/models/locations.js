@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+console.log(process.env.NODE_ENV);
+
 const openingTimeSchema = new mongoose.Schema({
     days: {
         type: String,
