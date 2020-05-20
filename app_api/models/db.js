@@ -4,24 +4,36 @@ let dbURI = `mongodb://${host}/Loc8r`;
 const readline = require('readline');
 
 if (process.env.NODE_ENV === 'production') {
-    dbURI = 'mongodb+srv://dbAdmin:dbPassword@loc8r-kuuy2.gcp.mongodb.net/test?retryWrites=true&w=majority';
+    dbURI = process.env.DB_ConnectionString;
     //dbURI = process.env.MONGODB_URI;
 }
 
 // const dbURIlog = 'mongodb://localhost/Loc8rLog';
 // const logDB = mongoose.createConnection(dbURIlog); //using logDB same as mongoose
-
-mongoose.connect(dbURI, {useNewUrlParser: true});
+const connect = () => {
+    setTimeout(() => mongoose.connect(dbURI, { useNewUrlParser: true, useCreateIndex: true}), 1000);
+}
 
 mongoose.connection.on('connected', () => {
     console.log(`Mongoose connected to ${dbURI}`);
 });
 mongoose.connection.on('error', err => {
     console.log('Mongoose connection error: ', err);
+    return connect();
 });
 mongoose.connection.on('disconnected', () => {
     console.log('Mongoose disconnected');
 });
+
+if (process.platform === 'win32') {
+    const rl = readLine.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+    rl.on ('SIGINT', () => {
+        process.emit("SIGINT");
+    });
+}
 
 const gracefulShutdown = (msg, callback) => {
     mongoose.connection.close(() => {
@@ -31,7 +43,7 @@ const gracefulShutdown = (msg, callback) => {
 };
 
 // For nodemon restarts
-process.on('SIGUSR2', () => {
+process.once('SIGUSR2', () => {
     gracefulShutdown('nodemon restart', () => {
         process.kill(process.pid, 'SIGUSR2');
     });
@@ -48,5 +60,7 @@ process.on('SIGTERM', () => {
         process.exit(0);
     });
 });
+
+connect();
 
 require('./locations');

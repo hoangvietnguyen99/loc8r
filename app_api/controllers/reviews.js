@@ -3,8 +3,8 @@ const locationModel = mongoose.model('Location');
 
 const doSetAverageRating = (location) => {
     if (location.reviews && location.reviews.length > 0) {
-        const count = location.review.length;
-        const total = location.reviews.reduce((acc, rating) => {
+        const count = location.reviews.length;
+        const total = location.reviews.reduce((acc, {rating}) => { //acc: accumulator
             return acc + rating;
         }, 0);
         location.rating = parseInt(total / count, 10);

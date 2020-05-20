@@ -1,3 +1,5 @@
+//Map API request to appropriate controller
+
 const express = require('express');
 const router = express.Router();
 const locationsController = require('../controllers/locations');

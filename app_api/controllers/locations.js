@@ -2,10 +2,10 @@ const mongoose = require('mongoose');
 const locationModel = mongoose.model('Location');
 
 const locationsCreate = (req, res) => {
-    locationModel.create({
+    locationModel.create({ //create method
         name: req.body.name,
         address: req.body.address,
-        facilities: req.body.facilities.split(","),
+        facilities: req.body.facilities.split(","), //split a string into an array of substrings
         coords: {
             type: "Point",
             coordinates: [
@@ -39,7 +39,7 @@ const locationsCreate = (req, res) => {
 
 };
 
-const locationsListByDistance = (req, res) => {
+const locationsListByDistance = async (req, res) => {
     const longitude = parseFloat(req.query.longitude); //GET: use req.query | POST: use req.body
     const latitude = parseFloat(req.query.latitude);
     const near = {
@@ -50,10 +50,11 @@ const locationsListByDistance = (req, res) => {
         distanceField: "distance.calculated",
         key: 'coords',
         spherical: true,
-        maxDistance: 20000,
-        limit: 10
+        maxDistance: parseFloat(req.query.maxDistance)
+        //limit: 10
     };
-    if (!longitude || !latitude) {
+    
+    if ((!longitude && longitude !== 0) || (!latitude && latitude !== 0)) {
         return res.status(404)
             .json({
                 "message": "Longitude and latitude query parameters are required"
@@ -67,7 +68,8 @@ const locationsListByDistance = (req, res) => {
                     near,
                     ...geoOptions
                 }
-            }
+            },
+            { $limit: 10 }
         ]);
         const locations = result.map(result => {
             return {
@@ -76,7 +78,7 @@ const locationsListByDistance = (req, res) => {
                 address: result.address,
                 rating: result.rating,
                 facilities: result.facilities,
-                distance: `${result.distance.calculated.toFixed()}m`
+                distance: `${result.distance.calculated.toFixed()}`
             }
         });
         res.status(200)
