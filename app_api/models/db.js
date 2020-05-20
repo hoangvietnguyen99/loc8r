@@ -4,8 +4,7 @@ let dbURI = `mongodb://${host}/Loc8r`;
 const readline = require('readline');
 
 if (process.env.NODE_ENV === 'production') {
-    dbURI = process.env.DB_ConnectionString;
-    //dbURI = process.env.MONGODB_URI;
+    dbURI = 'mongodb+srv://dbAdmin:3L0Z4Zbfev6Ewcka@loc8r-kuuy2.gcp.mongodb.net/test?retryWrites=true&w=majority';
 }
 
 // const dbURIlog = 'mongodb://localhost/Loc8rLog';
