@@ -41,11 +41,11 @@ const doAddReview = (req, res, location) => {
         });
         location.save((err, location) => {
             if (err) {
-                res.status(404)
+                res.status(400) // không lưu được xuống database
                     .json(err);
             } else {
                 updateAverageRating(location._id);
-                const thisReview = location.reviews.slice(-1).pop();
+                const thisReview = location.reviews[location.reviews.length - 1];
                 res.status(201)
                     .json(thisReview);
             }

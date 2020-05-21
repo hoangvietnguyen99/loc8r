@@ -144,24 +144,25 @@ const locationInfo = (req, res) => {
     })
 };
 
-const renderReviewForm = (req, res) => {
+const renderReviewForm = (req, res, {name}) => {
     res.render('location-review-form', {
-        title: 'Review Starcups on Loc8r',
+        title: `Review ${name} on Loc8r`,
         pageHeader: {
-            title: 'Review Starcups'
-        }
+            title: `Review ${name}`
+        },
+        error: req.query.err
     });
 };
 
 const addReview = (req, res) => {
     getLocationInfo(req, res, (req, res, responseData) => {
-        renderReviewForm((req, res, responseData));
+        renderReviewForm(req, res, responseData);
     });
 };
 
 const doAddReview = (req, res) => {
     const locationId = req.params.locationid;
-    const path = `/api/location/${locationid}/reviews`;
+    const path = `/api/locations/${locationId}/reviews`;
     const postData = {
         author: req.body.name,
         rating: parseInt(req.body.rating, 10),
@@ -172,12 +173,20 @@ const doAddReview = (req, res) => {
         method: 'POST',
         json: postData
     };
+    // validating at the application level
     if (!postData.author || !postData.rating || !postData.reviewText) {
-        res.redirect(`/location/${locationid}/review/new?err=val`);
+        res.redirect(`/location/${locationId}/review/new?err=val`);
     } else {
         request(requestOptions, (err, {statusCode}, body) => {
-
-        })
+            if (statusCode === 201) {
+                res.redirect(`/location/${locationId}`);
+            } else if (statusCode === 400 && name && name === 'ValidationError') { // validating at the schema level
+                res.redirect(`/locations/${locationId}/review/new?err=val`);
+            } else {
+                console.log(body);
+                showError(req, res, statusCode);
+            }
+        });
     }
 }
 
