@@ -35,7 +35,7 @@ block content
           .card.card-primary
             .card-block
               h2.card-title Location map
-              img.img-fluid.rounded(src=`http://maps.googleapis.com/maps/api/staticmap?center=${location.coords.lat},${location.coords.lng}&zoom=17&size=400x350&sensor=false&markers=${location.coords.lat},${location.coords.lng}&scale=2&key=AIzaSyD2U1OpOGMmab-mtMymoliXD8IW6sTM_WU`)
+              img.img-fluid.rounded(src=`http://maps.googleapis.com/maps/api/staticmap?center=${location.coords.coordinates[1]},${location.coords.coordinates[0]}&zoom=17&size=400x350&sensor=false&markers=${location.coords.coordinates[1]},${location.coords.coordinates[0]}&scale=2&key=AIzaSyD2U1OpOGMmab-mtMymoliXD8IW6sTM_WU`)
       .row
         .col-12
           .card.card-primary.review-card

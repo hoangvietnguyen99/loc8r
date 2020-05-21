@@ -9,12 +9,12 @@ const reviewsController = require('../controllers/reviews');
 router
     .route('/locations')
     .get(locationsController.locationsListByDistance)
-    .post(locationsController.locationsCreate);
+    .post(locationsController.locationsCreate); //for create
 router
     .route('/locations/:locationid')
     .get(locationsController.locationsReadOne)
-    .put(locationsController.locationsUpdateOne)
-    .delete(locationsController.locationsDeleteOne);
+    .put(locationsController.locationsUpdateOne) //for update
+    .delete(locationsController.locationsDeleteOne); //for delete
 
 // reviews
 router

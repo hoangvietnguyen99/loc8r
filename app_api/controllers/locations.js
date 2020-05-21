@@ -62,7 +62,7 @@ const locationsListByDistance = async (req, res) => {
     }
 
     try {
-        const result = await locationModel.aggregate([
+        const results = await locationModel.aggregate([
             {
                 $geoNear: {
                     near,
@@ -71,7 +71,7 @@ const locationsListByDistance = async (req, res) => {
             },
             { $limit: 10 }
         ]);
-        const locations = result.map(result => {
+        const locations = results.map(result => {
             return {
                 _id: result._id,
                 name: result.name,

@@ -1,4 +1,4 @@
-const request = require('request');
+const request = require('request'); //request module for calling API
 
 const APIOptions = {
     server: 'http://localhost:3000' //Default server for local development
@@ -9,10 +9,21 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const renderHomepage = (req, res, responseBody) => {
+    // let message = responseBody.message || null;
+    // if (message) {
+    //     responseBody = [];
+    // } else if (!(responseBody instanceof Array)) { //kiểm tra xem responseBody có phải là array
+    //     message = 'API lookup error';
+    //     responseBody = []; //tránh view bị lỗi về kiểu dữ liệu
+    // } else {
+    //     if (!responseBody.length) {
+    //         message = 'No places found nearby';
+    //     }
+    // }
     let message = null;
-    if (!(responseBody instanceof Array)) {
+    if (!(responseBody instanceof Array)) { //kiểm tra xem responseBody có phải là array
         message = 'API lookup error';
-        responseBody = [];
+        responseBody = []; //tránh view bị lỗi về kiểu dữ liệu
     } else {
         if (!responseBody.length) {
             message = 'No places found nearby';
@@ -35,17 +46,19 @@ const renderHomepage = (req, res, responseBody) => {
 const formatDistance = distance => {
     let thisDistance = 0;
     let unit = 'm';
-    if (distance > 1000) {
-        thisDistance = parseFloat(distance/1000).toFixed(1);
-        unit = 'km';
-    } else {
-        thisDistance = Math.floor(distance);
+    if (!isNaN(distance)) {
+        if (distance > 1000) {
+            thisDistance = parseFloat(distance/1000).toFixed(1);
+            unit = 'km';
+        } else {
+            thisDistance = Math.floor(distance);
+        }
     }
     return thisDistance + unit;
 }
 
 const homeList = (req, res) => {
-    const path = '/api/locations';
+    const path = '/api/locations'; //path for API request
     const requestOptions = {
         url: `${APIOptions.server}${path}`,
         method: 'GET',
@@ -54,18 +67,23 @@ const homeList = (req, res) => {
             longitude: -0.7992599,
             latitude: 51.378091,
             maxDistance: 20000 //m
+            // longitude: 1,
+            // latitude: 1,
+            // maxDistance: 20000 //m
         }
     };
     request(requestOptions, (err, {statusCode}, body) => {
+        // let data = body;
         let data = [];
-        if (statusCode === 200 && body.length) {
+        if (statusCode === 200 && body.length) { //chỉ chạy tiếp khi status code là 200 và có body trả về
+            // data = [];
             data = body.map(item => {
-                item.distance = formatDistance(item.distance);
+                item.distance = formatDistance(item.distance); //format the calculated distance
                 return item;
             });
         }
-        renderHomepage(req, res, body);
-    })
+        renderHomepage(req, res, data);
+    });
 };
 
 const renderDetailPage = (req, res, location) => {
@@ -109,10 +127,10 @@ const getLocationInfo = (req, res, callback) => {
     request(requestOptions, (err, {statusCode}, body) => {
         let data = body;
         if (statusCode === 200) {
-            data.coords = {
-                longitude: body.coords[0],
-                latitude: body.coords[1]
-            };
+            // data.coords = {
+            //     longitude: body.coords[0],
+            //     latitude: body.coords[1]
+            // };
             callback(req, res, data);
         } else {
             showError(req, res, statusCode);
